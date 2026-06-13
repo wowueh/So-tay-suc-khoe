@@ -3,62 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Sổ Tay Sức Khỏe Cho Bé</title>
     <style>
         :root {
-            --primary: #4a90e2;
-            --success: #2ec4b6;
-            --danger: #e71d36;
-            --warning: #ff9f1c;
-            --bg: #f6f8fa;
-            --text: #2b2d42;
+            --primary: #007aff; 
+            --success: #34c759;
+            --danger: #ff3b30;
+            --bg: #f2f2f7;
+            --text: #000000;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 
-        body { background-color: var(--bg); color: var(--text); padding: 15px; padding-bottom: 80px; font-size: 16px; }
+        body { background-color: var(--bg); color: var(--text); padding: 16px; padding-bottom: 40px; font-size: 16px; -webkit-tap-highlight-color: transparent; }
 
-        h2 { text-align: center; margin-bottom: 20px; color: var(--primary); }
-
-        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 15px; }
-
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 0.95rem; }
-
-        input[type="number"], input[type="text"], select {
-            width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; outline: none;
+        /* Thanh chuyển đổi giữa 2 bé ở đầu trang */
+        .baby-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #e5e5ea;
+            padding: 4px;
+            border-radius: 8px;
+        }
+        .btn-baby {
+            background: none;
+            border: none;
+            padding: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #8e8e93;
+            transition: all 0.2s ease;
+        }
+        .btn-baby.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Nút bấm trạng thái nhanh */
+        h2 { text-align: center; margin-bottom: 20px; font-size: 1.3rem; color: #1c1c1e; }
+        .card { background: white; padding: 16px; border-radius: 12px; margin-bottom: 16px; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; color: #3a3a3c; }
+
+        input[type="number"], input[type="text"] {
+            width: 100%; padding: 12px; border: 1px solid #c7c7cc; border-radius: 8px; font-size: 1rem; background: #fff; outline: none; -webkit-appearance: none;
+        }
+        input:focus { border-color: var(--primary); }
+
         .btn-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .btn-option {
-            background: #edf2f7; border: 2px solid transparent; padding: 10px; border-radius: 8px;
-            text-align: center; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: 0.2s;
+            background: #7676801f; border: 2px solid transparent; padding: 12px 5px; border-radius: 8px;
+            text-align: center; font-size: 0.85rem; font-weight: 500; cursor: pointer;
         }
-        .btn-option.active { border-color: var(--primary); background: #ebf8ff; color: var(--primary); }
+        .btn-option.active { background: #007aff14; border-color: var(--primary); color: var(--primary); font-weight: 600; }
 
-        /* Nút hành động chính */
         .btn-main {
             width: 100%; background: var(--primary); color: white; border: none; padding: 14px;
-            border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-top: 10px;
+            border-radius: 8px; font-size: 1.05rem; font-weight: 600; margin-top: 10px;
         }
-        .btn-main:active { opacity: 0.9; }
+        .btn-main:active { opacity: 0.8; }
 
-        /* Lịch sử nhật ký */
-        .log-item { background: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .log-time { font-size: 0.85rem; color: #718096; font-weight: bold; }
-        .log-temp { font-size: 1.2rem; font-weight: bold; color: var(--danger); margin: 4px 0; }
-        .log-details { font-size: 0.9rem; line-height: 1.4; color: #4a5568; }
+        /* Danh sách lịch sử */
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 10px 5px; }
+        h3 { font-size: 1.1rem; color: #3a3a3c; }
+        
+        .log-item { background: white; padding: 14px; border-radius: 12px; margin-bottom: 12px; border-left: 5px solid var(--primary); }
+        .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .log-time { font-size: 0.85rem; color: #8e8e93; font-weight: 500; }
+        .log-temp { font-size: 1.15rem; font-weight: 700; color: #1c1c1e; }
+        .log-temp.fever { color: var(--danger); }
+        .log-details { font-size: 0.9rem; line-height: 1.45; color: #48484a; border-top: 1px solid #f2f2f7; padding-top: 6px; margin-top: 6px; }
 
-        /* Thanh công cụ xuất dữ liệu */
-        .toolbar { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-sec { flex: 1; background: #e2e8f0; border: none; padding: 10px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; }
-        .btn-danger { background: #fed7d7; color: var(--danger); }
+        /* Nút xem thêm nhật ký cũ */
+        .btn-load-more {
+            width: 100%; background: white; color: var(--primary); border: 1px solid var(--primary);
+            padding: 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; margin-bottom: 20px; text-align: center; cursor: pointer;
+        }
+        .btn-load-more:active { background: #007aff0a; }
+
+        .toolbar { display: flex; gap: 12px; margin-top: 10px; }
+        .btn-sec { flex: 1; background: #e5e5ea; border: none; padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; color: #007aff; }
+        .btn-danger { color: var(--danger); }
     </style>
 </head>
 <body>
 
-    <h2>👶 Nhật Ký Sức Khỏe Của Bé</h2>
+    <div class="baby-selector">
+        <button id="btn-may" class="btn-baby active" onclick="switchBaby('may')">☁️ Bé Mây</button>
+        <button id="btn-dau" class="btn-baby" onclick="switchBaby('dau')">🍓 Bé Dâu</button>
+    </div>
+
+    <h2>Nhật Ký Sức Khỏe: <span id="current-baby-name" style="color: var(--primary);">Bé Mây</span></h2>
 
     <div class="card">
         <div class="form-group">
@@ -68,7 +109,7 @@
 
         <div class="form-group">
             <label>Thuốc hạ sốt & Liều lượng:</label>
-            <input type="text" id="meds" placeholder="Ví dụ: Hapacol 150mg (hoặc bỏ trống)">
+            <input type="text" id="meds" placeholder="Ví dụ: Hapacol 150mg (bỏ trống nếu không uống)">
         </div>
 
         <div class="form-group">
@@ -76,7 +117,7 @@
             <div class="btn-group" id="mood-group">
                 <div class="btn-option" onclick="selectOption('mood', 'Tươi tỉnh')">😊 Tươi tỉnh</div>
                 <div class="btn-option" onclick="selectOption('mood', 'Mệt/Quấy')">😢 Mệt/Quấy</div>
-                <div class="btn-option" onclick="selectOption('mood', 'Lờ đờ/Li bì')">💤 Li bì</div>
+                <div class="btn-option" onclick="selectOption('mood', 'Li bì')">💤 Li bì</div>
             </div>
         </div>
 
@@ -84,53 +125,78 @@
             <label>Ăn uống / Bú sữa:</label>
             <div class="btn-group" id="eat-group">
                 <div class="btn-option" onclick="selectOption('eat', 'Tốt')">🍼 Ăn tốt</div>
-                <div class="btn-option" onclick="selectOption('eat', 'Kém/Bỏ bú')">🙅 Kém ăn</div>
+                <div class="btn-option" onclick="selectOption('eat', 'Kém ăn')">🙅 Kém ăn</div>
                 <div class="btn-option" onclick="selectOption('eat', 'Nôn trớ')">🤮 Nôn trớ</div>
             </div>
         </div>
 
         <div class="form-group">
-            <label>Triệu chứng khác (ho hen, phát ban, tiêu chảy...):</label>
-            <input type="text" id="note" placeholder="Nhập thêm nếu có...">
+            <label>Triệu chứng khác:</label>
+            <input type="text" id="note" placeholder="Ho hen, phát ban, tiêu chảy...">
         </div>
 
-        <button class="btn-main" onclick="saveLog()">+ LƯU NHẬT KÝ</button>
+        <button class="btn-main" onclick="saveLog()">Lưu nhật ký</button>
     </div>
 
-    <h3>Lịch sử theo dõi</h3>
-    <div id="log-container" style="margin-top: 10px;">
-        </div>
+    <div class="history-header">
+        <h3>Lịch sử theo dõi</h3>
+    </div>
+    
+    <div id="log-container"></div>
+
+    <button id="load-more-btn" class="btn-load-more" onclick="loadAllLogs()" style="display: none;">🔄 Tải lại / Xem tất cả nhật ký cũ</button>
 
     <div class="toolbar">
-        <button class="btn-sec" onclick="exportData()">📤 Xuất file gửi Bác sĩ</button>
-        <button class="btn-sec btn-danger" onclick="clearData()">🗑️ Xóa hết</button>
+        <button class="btn-sec" onclick="exportData()">📤 Xuất file bé này</button>
+        <button class="btn-sec btn-danger" onclick="clearData()">🗑️ Xóa dữ liệu bé này</button>
     </div>
 
     <script>
-        // Khởi tạo biến lưu trạng thái nút bấm nhanh
+        let currentBaby = 'may'; // Mặc định ban đầu là bé Mây
         let currentMood = '';
         let currentEat = '';
+        let showAll = false; // Mặc định chỉ hiện 5 cái gần nhất
+
+        const babyNames = {
+            'may': 'Bé Mây',
+            'dau': 'Bé Dâu'
+        };
+
+        // Hàm chuyển đổi qua lại giữa 2 bé
+        function switchBaby(baby) {
+            currentBaby = baby;
+            showAll = false; // Reset lại chế độ xem ngắn gọn khi đổi bé
+
+            // Đổi trạng thái nút bấm ở đầu trang
+            document.getElementById('btn-may').classList.remove('active');
+            document.getElementById('btn-dau').classList.remove('active');
+            document.getElementById('btn-' + baby).classList.add('active');
+
+            // Đổi tiêu đề tên bé
+            document.getElementById('current-baby-name').innerText = babyNames[baby];
+
+            // Tải lại danh sách nhật ký tương ứng
+            renderLogs();
+        }
 
         function selectOption(type, value) {
             const containerId = type === 'mood' ? 'mood-group' : 'eat-group';
             const options = document.getElementById(containerId).getElementsByClassName('btn-option');
-            
             for (let opt of options) {
                 opt.classList.remove('active');
                 if (opt.innerText.includes(value)) opt.classList.add('active');
             }
-            
             if (type === 'mood') currentMood = value;
             if (type === 'eat') currentEat = value;
         }
 
-        // Hàm lưu dữ liệu vào LocalStorage
         function saveLog() {
-            const temp = document.getElementById('temp').value;
-            const meds = document.getElementById('meds').value || 'Không uống';
-            const note = document.getElementById('note').value || 'Không có';
+            const tempInput = document.getElementById('temp').value;
+            const meds = document.getElementById('meds').value.trim() || 'Không uống';
+            const note = document.getElementById('note').value.trim() || 'Không';
             
-            if(!temp) { alert('Vui lòng nhập nhiệt độ!'); return; }
+            if(!tempInput) { alert('Vui lòng nhập nhiệt độ!'); return; }
+            const temp = parseFloat(tempInput).toFixed(1);
 
             const now = new Date();
             const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} - Ngày ${now.getDate()}/${now.getMonth()+1}`;
@@ -139,16 +205,18 @@
                 time: timeString,
                 temp: temp,
                 meds: meds,
-                mood: currentMood || 'Chưa đánh giá',
-                eat: currentEat || 'Chưa đánh giá',
+                mood: currentMood || 'Bình thường',
+                eat: currentEat || 'Bình thường',
                 note: note
             };
 
-            let currentLogs = JSON.parse(localStorage.getItem('babyLogs')) || [];
-            currentLogs.unshift(logEntry); // Đưa dữ liệu mới lên đầu
-            localStorage.setItem('babyLogs', JSON.stringify(currentLogs));
+            // Lưu vào đúng kho dữ liệu của bé đang được chọn
+            const dbKey = 'babyLocalLogs_' + currentBaby;
+            let currentLogs = JSON.parse(localStorage.getItem(dbKey)) || [];
+            currentLogs.unshift(logEntry);
+            localStorage.setItem(dbKey, JSON.stringify(currentLogs));
 
-            // Reset Form
+            // Reset form nhập
             document.getElementById('temp').value = '';
             document.getElementById('meds').value = '';
             document.getElementById('note').value = '';
@@ -159,55 +227,77 @@
             renderLogs();
         }
 
-        // Hàm hiển thị dữ liệu ra màn hình
+        // Bấm nút tải lại/xem hết nhật ký cũ
+        function loadAllLogs() {
+            showAll = true;
+            renderLogs();
+        }
+
         function renderLogs() {
             const container = document.getElementById('log-container');
-            const currentLogs = JSON.parse(localStorage.getItem('babyLogs')) || [];
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            const dbKey = 'babyLocalLogs_' + currentBaby;
+            const currentLogs = JSON.parse(localStorage.getItem(dbKey)) || [];
             
             if (currentLogs.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#888; padding:20px;">Chưa có dữ liệu nào được ghi chép.</p>';
+                container.innerHTML = `<div class="card" style="text-align:center; color:#8e8e93; padding:20px;">Chưa có dữ liệu của ${babyNames[currentBaby]}. Hãy nhập ở trên để bắt đầu.</div>`;
+                loadMoreBtn.style.display = 'none';
                 return;
             }
 
-            container.innerHTML = currentLogs.map((log, index) => `
-                <div class="log-item" style="border-left-color: ${log.temp >= 38.5 ? 'var(--danger)' : 'var(--success)'}">
-                    <div class="log-time">⏰ ${log.time}</div>
-                    <div class="log-temp">${log.temp}°C ${log.temp >= 38.5 ? '🔥 (Sốt cao)' : '🌡️'}</div>
-                    <div class="log-details">
-                        <b>Thuốc:</b> ${log.meds} <br>
-                        <b>Tinh thần:</b> ${log.mood} | <b>Ăn uống:</b> ${log.eat} <br>
-                        <b>Khác:</b> ${log.note}
+            // Xử lý cắt bớt danh sách nếu không chọn chế độ "Xem tất cả"
+            let logsToDisplay = currentLogs;
+            if (currentLogs.length > 5 && !showAll) {
+                logsToDisplay = currentLogs.slice(0, 5);
+                loadMoreBtn.style.display = 'block'; // Hiện nút tải nhật ký cũ
+            } else {
+                loadMoreBtn.style.display = 'none'; // Ẩn nút nếu đã hiển thị hết hoặc dữ liệu ít hơn 5
+            }
+
+            container.innerHTML = logsToDisplay.map(log => {
+                const isFever = parseFloat(log.temp) >= 38.5;
+                return `
+                    <div class="log-item" style="border-left-color: ${isFever ? 'var(--danger)' : 'var(--success)'}">
+                        <div class="log-header">
+                            <span class="log-temp ${isFever ? 'fever' : ''}">${log.temp}°C ${isFever ? '🔥' : '🌡️'}</span>
+                            <span class="log-time">⏰ ${log.time}</span>
+                        </div>
+                        <div class="log-details">
+                            <b>Thuốc:</b> ${log.meds} <br>
+                            <b>Sức khỏe:</b> ${log.mood} / Ăn uống: ${log.eat} <br>
+                            <b>Ghi chú:</b> ${log.note}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        // Hàm xóa dữ liệu
         function clearData() {
-            if(confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử không?")) {
-                localStorage.removeItem('babyLogs');
+            if(confirm(`Bạn có chắc chắn muốn xóa toàn bộ lịch sử của ${babyNames[currentBaby]} không?`)) {
+                const dbKey = 'babyLocalLogs_' + currentBaby;
+                localStorage.removeItem(dbKey);
                 renderLogs();
             }
         }
 
-        // Hàm xuất dữ liệu thành file văn bản dễ đọc
         function exportData() {
-            const currentLogs = JSON.parse(localStorage.getItem('babyLogs')) || [];
+            const dbKey = 'babyLocalLogs_' + currentBaby;
+            const currentLogs = JSON.parse(localStorage.getItem(dbKey)) || [];
             if(currentLogs.length === 0) { alert('Chưa có dữ liệu để xuất!'); return; }
 
-            let text = "NHẬT KÝ LÂM SÀNG CỦA BÉ\n=====================\n";
+            let text = `NHẬT KÝ LÂM SÀNG CỦA ${babyNames[currentBaby].toUpperCase()}\n=====================\n`;
             currentLogs.forEach(l => {
-                text += `Thời gian: ${l.time}\nNhiệt độ: ${l.temp}°C\nThuốc: ${l.meds}\nTinh thần: ${l.mood}\nĂn uống: ${l.eat}\nGhi chú khác: ${l.note}\n---------------------\n`;
+                text += `Thời gian: ${l.time}\nNhiệt độ: ${l.temp}°C\nThuốc: ${l.meds}\nTình trạng: ${l.mood} / ${l.eat}\nGhi chú: ${l.note}\n---------------------\n`;
             });
 
             const blob = new Blob([text], {type: "text/plain;charset=utf-8"});
             const a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
-            a.download = "nhat_ky_suc_khoe_be.txt";
+            a.download = `nhat_ky_suc_khoe_${currentBaby}.txt`;
             a.click();
         }
 
-        // Chạy hiển thị ngay khi mở trang web
+        // Khởi chạy ứng dụng
         renderLogs();
     </script>
 </body>
